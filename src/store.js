@@ -43,6 +43,14 @@ export async function findMemoryById(id) {
   return Memory.findById(id);
 }
 
+// A memory with its supersession/conflict links populated for inspection.
+export async function findMemoryWithLinks(id) {
+  return Memory.findById(id)
+    .populate("supersedes")
+    .populate("supersededBy")
+    .populate("conflictsWith");
+}
+
 export async function createMemory(fields) {
   return Memory.create(fields);
 }

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Memory Engine</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 720px; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; color: #1a1a1a; }
+    h1 { border-bottom: 2px solid #1a1a1a; padding-bottom: .5rem; }
+    section { margin: 2rem 0; }
+    textarea, input[type="text"] { width: 100%; padding: .5rem; font: inherit; box-sizing: border-box; }
+    button { padding: .5rem 1rem; font: inherit; cursor: pointer; }
+    ul { padding-left: 1.2rem; }
+    li { margin: .4rem 0; }
+    .tag { color: #555; font-size: .85rem; }
+    .muted { color: #888; }
+    form.inline { display: inline; }
+  </style>
+</head>
+<body>
+  <h1>Memory Engine</h1>
+
+  <section>
+    <h2>Store a fact</h2>
+    <form method="POST" action="/memories">
+      <textarea name="text" rows="2" placeholder="e.g. I live in Pune"></textarea><br>
+      <input type="text" name="messageId" placeholder="messageId (optional)">
+      <button type="submit">Store</button>
+    </form>
+  </section>
+
+  <section>
+    <h2>Retrieve relevant context</h2>
+    <form method="GET" action="/">
+      <input type="text" name="query" value="<%= query %>" placeholder="which city does the user live in">
+      <button type="submit">Retrieve</button>
+    </form>
+
+    <% if (query) { %>
+      <h3>Results for &ldquo;<%= query %>&rdquo;</h3>
+      <ul>
+        <% results.forEach((r) => { %>
+          <li>
+            <strong><%= r.memory.content %></strong>
+            <span class="tag">[<%= r.memory.topic %>/<%= r.memory.subject %>]</span>
+            &mdash; score <%= r.evidence.score %>
+            <span class="muted">(<%= r.evidence.matchedTopic ? 'topic' : 'token' %> match)</span>
+          </li>
+        <% }) %>
+        <% if (results.length === 0) { %>
+          <li class="muted">No relevant memories.</li>
+        <% } %>
+      </ul>
+    <% } %>
+  </section>
+
+  <section>
+    <h2>Active memories</h2>
+    <% if (memories.length === 0) { %>
+      <p class="muted">No active memories yet.</p>
+    <% } else { %>
+      <ul>
+        <% memories.forEach((m) => { %>
+          <li>
+            <a href="/memories/<%= m._id %>"><%= m.content %></a>
+            <span class="tag">[<%= m.topic %>/<%= m.subject %>]</span>
+            <form class="inline" method="POST" action="/memories/<%= m._id %>/delete">
+              <button type="submit">delete</button>
+            </form>
+          </li>
+        <% }) %>
+      </ul>
+    <% } %>
+  </section>
+</body>
+</html>
