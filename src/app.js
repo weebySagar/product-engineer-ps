@@ -2,16 +2,14 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import express from "express";
 import { extractFact } from "./extractor.js";
-import { reconcile } from "./reconciler.js";
+import { ingestFact } from "./ingest.js";
 import { retrieve } from "./retriever.js";
 import {
   findActiveMemories,
   findMemoryById,
   findMemoryWithLinks,
-  createMemory,
   supersede,
   softDelete,
-  addConflict,
 } from "./store.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -52,36 +50,17 @@ export function createApp() {
           : res.status(400).json({ error: "text is required" });
       }
 
-      const fact = extractFact(text, { messageId, text });
-      if (!fact) {
+      const result = await ingestFact(text, { messageId });
+      if (!result) {
         return wantsHtml(req)
           ? res.redirect("/")
           : res.status(422).json({ error: "no recognizable fact in message" });
       }
 
-      const active = await findActiveMemories();
-      const action = reconcile(fact, active);
-
-      let status = 201;
-      let body;
-
-      if (action.type === "create") {
-        body = await createMemory(fact);
-      } else if (action.type === "supersede") {
-        const { old, new: created } = await supersede(action.supersededId, fact);
-        body = { memory: created, superseded: old._id };
-      } else if (action.type === "conflict") {
-        const created = await createMemory(fact);
-        for (const cid of action.conflictingIds) {
-          await addConflict(created._id, cid);
-        }
-        body = { memory: created, conflictsWith: action.conflictingIds };
-      } else {
-        return res.status(500).json({ error: "unhandled reconcile action" });
-      }
-
       if (wantsHtml(req)) return res.redirect("/");
-      return res.status(status).json(body);
+      if (result.superseded) return res.status(201).json(result);
+      if (result.conflictsWith) return res.status(201).json(result);
+      return res.status(201).json(result.memory);
     } catch (err) {
       next(err);
     }

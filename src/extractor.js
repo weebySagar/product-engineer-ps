@@ -13,15 +13,18 @@ export function extractFact(text, source = {}) {
   const lower = raw.toLowerCase();
 
   for (const rule of RULES) {
-    const matched = rule.keywords.some((k) => lower.includes(k));
-    if (!matched) continue;
+    // A rule matches when a keyword OR a correction keyword appears. Matching
+    // on correction keywords too means "I no longer like pizza" still routes
+    // to the food slot even though it carries no food keyword.
+    const hasKeyword = rule.keywords.some((k) => lower.includes(k));
+    const hasCorrection = rule.correction.some((k) => lower.includes(k));
+    if (!hasKeyword && !hasCorrection) continue;
 
-    const isCorrection = rule.correction.some((k) => lower.includes(k));
     return {
       topic: rule.topic,
       subject: rule.subject,
       content: raw.trim(),
-      kind: isCorrection ? "correction" : "statement",
+      kind: hasCorrection ? "correction" : "statement",
       source: {
         messageId: source.messageId,
         text: raw,

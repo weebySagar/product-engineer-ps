@@ -14,19 +14,19 @@ export const RULES = [
   {
     topic: "location",
     subject: "city",
-    keywords: ["live in", "city", "hometown", "moved to", "based in"],
+    keywords: ["live in", "moved to", "hometown", "based in"],
     correction: ["moved to", "now live", "relocated", "moved back"],
   },
   {
     topic: "location",
     subject: "country",
-    keywords: ["country", "citizen", "nationality", "from india", "from the us"],
+    keywords: ["citizen", "nationality", "country"],
     correction: [],
   },
   {
     topic: "location",
     subject: "office",
-    keywords: ["office", "work in"],
+    keywords: ["office"],
     correction: ["moved office"],
   },
   {
@@ -56,13 +56,19 @@ export const RULES = [
   {
     topic: "preference",
     subject: "food",
-    keywords: ["favorite food", "favourite dish", "love eating"],
-    correction: ["no longer like"],
+    keywords: ["favorite food", "favourite dish", "favorite dish", "love eating"],
+    correction: ["no longer like", "now prefer"],
+  },
+  {
+    topic: "preference",
+    subject: "band",
+    keywords: ["favorite band"],
+    correction: [],
   },
   {
     topic: "preference",
     subject: "music",
-    keywords: ["favorite band", "favorite music", "listen to"],
+    keywords: ["listen to", "favorite music"],
     correction: [],
   },
   {
@@ -70,5 +76,71 @@ export const RULES = [
     subject: "pet",
     keywords: ["dog", "cat", "puppy", "kitten", "pet"],
     correction: ["no longer have", "gave away"],
+  },
+  {
+    topic: "hobby",
+    subject: "sport",
+    keywords: ["football", "cricket", "tennis"],
+    correction: ["stopped playing"],
+  },
+  {
+    topic: "hobby",
+    subject: "activity",
+    keywords: ["hobby", "painting", "reading", "gardening"],
+    correction: [],
+  },
+  {
+    topic: "education",
+    subject: "degree",
+    keywords: ["degree", "graduated", "bachelor", "master"],
+    correction: [],
+  },
+  {
+    topic: "education",
+    subject: "school",
+    keywords: ["studied at", "college", "university"],
+    correction: [],
+  },
+  {
+    topic: "health",
+    subject: "exercise",
+    keywords: ["gym", "exercise", "workout", "running"],
+    correction: [],
+  },
+  {
+    topic: "health",
+    subject: "diet",
+    keywords: ["diet", "vegetarian", "vegan", "allergic"],
+    correction: ["now vegetarian", "no longer vegetarian", "no longer allergic"],
+  },
+  {
+    topic: "language",
+    subject: "language",
+    keywords: ["speak", "language"],
+    correction: [],
+  },
+  {
+    topic: "finance",
+    subject: "salary",
+    keywords: ["salary", "earn", "income"],
+    correction: ["now earn"],
+  },
+  {
+    topic: "travel",
+    subject: "favorite-place",
+    keywords: ["favorite place", "visited", "travelled"],
+    correction: [],
+  },
+  {
+    topic: "residence",
+    subject: "home",
+    keywords: ["home", "apartment", "house", "rent"],
+    correction: ["moved house"],
+  },
+  {
+    topic: "vehicle",
+    subject: "car",
+    keywords: ["car", "drive", "bike", "motorcycle"],
+    correction: ["sold my car", "no longer drive"],
   },
 ];
