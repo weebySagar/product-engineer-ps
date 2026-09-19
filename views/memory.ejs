@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Memory</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 720px; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; color: #1a1a1a; }
+    h1 { border-bottom: 2px solid #1a1a1a; padding-bottom: .5rem; }
+    dl { display: grid; grid-template-columns: 8rem 1fr; gap: .25rem .5rem; }
+    dt { font-weight: bold; }
+    dd { margin: 0; }
+    .state { font-weight: bold; text-transform: uppercase; }
+    section { margin: 2rem 0; }
+    textarea { width: 100%; padding: .5rem; font: inherit; box-sizing: border-box; }
+    button { padding: .5rem 1rem; font: inherit; cursor: pointer; }
+    .tag { color: #555; font-size: .85rem; }
+  </style>
+</head>
+<body>
+  <h1><%= memory.content %></h1>
+  <p class="state"><%= memory.state %></p>
+
+  <dl>
+    <dt>topic</dt><dd><%= memory.topic %></dd>
+    <dt>subject</dt><dd><%= memory.subject %></dd>
+    <dt>kind</dt><dd><%= memory.kind %></dd>
+    <dt>source</dt><dd><%= memory.source && memory.source.messageId ? memory.source.messageId + ' — ' : '' %><%= memory.source && memory.source.text %></dd>
+    <dt>created</dt><dd><%= memory.createdAt %></dd>
+  </dl>
+
+  <% if (memory.supersedes) { %>
+    <p>Supersedes: <a href="/memories/<%= memory.supersedes._id %>"><%= memory.supersedes.content %></a></p>
+  <% } %>
+  <% if (memory.supersededBy) { %>
+    <p>Superseded by: <a href="/memories/<%= memory.supersededBy._id %>"><%= memory.supersededBy.content %></a></p>
+  <% } %>
+  <% if (memory.conflictsWith && memory.conflictsWith.length) { %>
+    <p>Conflicts with:
+      <% memory.conflictsWith.forEach((c, i) => { %>
+        <% if (i > 0) { %>, <% } %><a href="/memories/<%= c._id %>"><%= c.content %></a>
+      <% }) %>
+    </p>
+  <% } %>
+
+  <section>
+    <h2>Explicit correction (supersede)</h2>
+    <form method="POST" action="/memories/<%= memory._id %>/supersede">
+      <textarea name="text" rows="2" placeholder="e.g. I moved to Mumbai"></textarea><br>
+      <button type="submit">Supersede</button>
+    </form>
+  </section>
+
+  <p><a href="/">&larr; Back to index</a></p>
+</body>
+</html>

@@ -111,4 +111,25 @@ describe("memory API", () => {
     expect(old.state).toBe("superseded");
     expect(old.supersededBy.toString()).toBe(res.body.memory._id);
   });
+
+  it("renders the demo index page as HTML", async () => {
+    const res = await request(app).get("/");
+    expect(res.status).toBe(200);
+    expect(res.text).toContain("Memory Engine");
+  });
+
+  it("renders a memory inspect page with its supersession chain", async () => {
+    const first = await request(app)
+      .post("/memories")
+      .send({ text: "I live in Pune" });
+    await request(app).post("/memories").send({ text: "I moved to Mumbai" });
+
+    const res = await request(app)
+      .get(`/memories/${first.body._id}`)
+      .set("Accept", "text/html");
+
+    expect(res.status).toBe(200);
+    expect(res.text).toContain("I live in Pune");
+    expect(res.text).toContain("Superseded by");
+  });
 });
