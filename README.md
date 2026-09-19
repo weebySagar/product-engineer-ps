@@ -2,6 +2,22 @@
 
 > **Before you begin:** Read this README and your selected problem brief completely before starting. If anything is unclear, contact us using whichever option you prefer: [hr@caygnus.com](mailto:hr@caygnus.com) or [Omkar Sonawane on LinkedIn](https://www.linkedin.com/in/omkar-sonawane-ss/).
 
+## Solution — Problem 4: Trustworthy Long-Term Memory
+
+A deterministic memory engine (Node.js + Express + MongoDB) that stores conversational facts with provenance, retrieves relevant current context, and handles corrections, ambiguous conflicts, and deletion — no LLM or paid service.
+
+```text
+npm install
+cp .env.example .env        # edit MONGO_URI if not using the default
+npm start                   # API + demo UI at http://localhost:3000 (requires MongoDB)
+
+npm test          # 26 automated tests (unit + API integration, in-memory MongoDB)
+npm run benchmark # deterministic fixture: 30 memories, 23 queries -> 23/23 passed
+npm run seed      # (optional) load the fixture into a running MongoDB for the demo UI
+```
+
+Data flow: `src/extractor.js` → `src/reconciler.js` → `src/store.js` → `src/retriever.js`, behind a thin REST + EJS layer in `src/app.js`. Full write-up in [`SUBMISSION.md`](SUBMISSION.md).
+
 We are hiring a **Product Engineer / Full-Stack Developer** to build and ship products in the AI space at Caygnus. The role is available in a **remote or hybrid** working arrangement.
 
 We care less about years of experience than evidence: what you have shipped, the complexity or scale you have handled, and how you make engineering and product decisions.
