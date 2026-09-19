@@ -32,10 +32,17 @@ export function retrieve(query, memories, k = 5) {
   for (const memory of memories) {
     if (memory.state && memory.state !== "active") continue;
 
+    // A memory counts as a topic match only when it shares BOTH topic and
+    // subject with the query — otherwise "which city" would also surface the
+    // user's office and country just because they share the "location" topic.
     let topicScore = 0;
-    if (queryTopic && memory.topic === queryTopic) {
-      topicScore = 10;
-      if (querySubject && memory.subject === querySubject) topicScore += 5;
+    if (
+      queryTopic &&
+      querySubject &&
+      memory.topic === queryTopic &&
+      memory.subject === querySubject
+    ) {
+      topicScore = 15;
     }
 
     const matchedTerms = tokenize(memory.content).filter((t) =>
