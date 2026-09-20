@@ -148,6 +148,3 @@ What I would change first (proposals, not shipped):
 
 I used **Claude Code** to design the architecture, scaffold the project, and draft the modules and tests, working test-first. I reviewed every generated module and adjusted the design where the generator's first pass was wrong (e.g. making the extractor route corrections like "I no longer like pizza" to their slot, and scoping retrieval to topic+subject so "which city" doesn't also return office/country). All behaviour is verified by the automated suite and the fixture benchmark, which I ran and inspected myself.
 
-## Credibility note
-
-[Describe one product or system you previously helped ship: the problem it solved, your personal contribution, the scale or operational complexity involved, and one difficult engineering or product decision. Anonymize confidential details and use approximate figures. Add a public link or other evidence where available.]
