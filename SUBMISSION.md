@@ -2,9 +2,9 @@
 
 ## Candidate
 
-- **Name:** [Your name]
-- **Email:** [Your email]
-- **GitHub:** [Your GitHub profile]
+- **Name:** Sagar Moriya
+- **Email:** sagarmaurya814@gmail.com
+- **GitHub:** [\[Your GitHub profile\]](https://github.com/weebySagar/product-engineer-ps)
 - **Selected problem:** Problem 4 — Trustworthy Long-Term Memory
 - **Demo video:** [Paste your 3–5 minute demo video link here]
 
