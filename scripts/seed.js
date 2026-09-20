@@ -6,7 +6,7 @@ import "dotenv/config";
 import mongoose from "mongoose";
 import { readFile } from "node:fs/promises";
 import { ingestFact } from "../src/ingest.js";
-import { Memory } from "../src/store.js";
+import { Memory } from "../src/models/Memory.js";
 
 const fixturePath = new URL("../fixtures/benchmark.json", import.meta.url);
 
