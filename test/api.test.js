@@ -3,7 +3,7 @@ import request from "supertest";
 import mongoose from "mongoose";
 import { MongoMemoryServer } from "mongodb-memory-server";
 import { createApp } from "../src/app.js";
-import { Memory } from "../src/store.js";
+import { Memory } from "../src/models/Memory.js";
 
 let mongo;
 let app;

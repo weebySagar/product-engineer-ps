@@ -1,39 +1,7 @@
-import mongoose from "mongoose";
+import { Memory } from "./models/Memory.js";
 
-const sourceSchema = new mongoose.Schema(
-  {
-    messageId: { type: String },
-    text: { type: String },
-    createdAt: { type: Date },
-  },
-  { _id: false }
-);
-
-const memorySchema = new mongoose.Schema(
-  {
-    topic: { type: String, required: true, index: true },
-    subject: { type: String, required: true, index: true },
-    content: { type: String, required: true },
-    kind: {
-      type: String,
-      enum: ["statement", "correction"],
-      default: "statement",
-    },
-    source: { type: sourceSchema },
-    state: {
-      type: String,
-      enum: ["active", "superseded", "deleted"],
-      default: "active",
-      index: true,
-    },
-    supersedes: { type: mongoose.Schema.Types.ObjectId, ref: "Memory", default: null },
-    supersededBy: { type: mongoose.Schema.Types.ObjectId, ref: "Memory", default: null },
-    conflictsWith: [{ type: mongoose.Schema.Types.ObjectId, ref: "Memory" }],
-  },
-  { timestamps: true }
-);
-
-export const Memory = mongoose.model("Memory", memorySchema);
+// Persistence layer. The Mongoose schema/model lives in models/Memory.js so the
+// domain shape and the persistence helpers stay separate concerns.
 
 export async function findActiveMemories() {
   return Memory.find({ state: "active" }).lean();
