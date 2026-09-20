@@ -4,19 +4,49 @@
 
 ## Solution — Problem 4: Trustworthy Long-Term Memory
 
-A deterministic memory engine (Node.js + Express + MongoDB) that stores conversational facts with provenance, retrieves relevant current context, and handles corrections, ambiguous conflicts, and deletion — no LLM or paid service.
+A deterministic memory engine (Node.js + Express + MongoDB) that stores conversational facts with provenance, retrieves relevant current context, and handles corrections, ambiguous conflicts, and deletion — **no LLM, embeddings, or paid service**.
+
+**What it does** (maps to the six acceptance criteria):
+
+- **Stores with provenance** — a memory has a stable id plus a `source` (the originating message id/text/time).
+- **Retrieves relevant context** — a bounded, ranked set of *current* memories for a query, each with selection evidence.
+- **Corrects without losing history** — an explicit correction supersedes the old fact, linking a `supersedes`/`supersededBy` chain.
+- **Handles ambiguity conservatively** — a same-slot statement with no correction signal keeps *both* facts active and links them via `conflictsWith`.
+- **Soft-deletes** — a deleted memory leaves retrieval but stays inspectable.
+- **Verifies deterministically** — a version-controlled fixture runs repeatably with no external dependency.
+
+**Architecture** — a four-stage pipeline, each stage a single-responsibility module:
+
+```
+message ──▶ extractor ──▶ reconciler ──▶ store (MongoDB) ──▶ retriever
+            keyword map    lifecycle rules   Mongoose model     rank + bound
+```
+
+| Module | File(s) | Responsibility |
+| --- | --- | --- |
+| Extractor | `src/extractor.js`, `src/rules.js` | keyword map → `{ topic, subject, content, kind }` |
+| Reconciler | `src/reconciler.js` | pure decision: `create` \| `supersede` \| `conflict` |
+| Model + Store | `src/models/Memory.js`, `src/store.js` | Mongoose schema (`state`, `supersedes`/`supersededBy`/`conflictsWith`) + persistence |
+| Retriever | `src/retriever.js` | topic+subject match (15) + token overlap (1/token), bounded to K=5 |
+| App | `src/app.js`, `src/ingest.js` | REST API + EJS demo UI (content-negotiated) |
+
+**Run it**
 
 ```text
 npm install
 cp .env.example .env        # edit MONGO_URI if not using the default
 npm start                   # API + demo UI at http://localhost:3000 (requires MongoDB)
+```
 
+**Verify it**
+
+```text
 npm test          # 26 automated tests (unit + API integration, in-memory MongoDB)
 npm run benchmark # deterministic fixture: 30 memories, 23 queries -> 23/23 passed
 npm run seed      # (optional) load the fixture into a running MongoDB for the demo UI
 ```
 
-Data flow: `src/extractor.js` → `src/reconciler.js` → `src/store.js` → `src/retriever.js`, behind a thin REST + EJS layer in `src/app.js`. Full write-up in [`SUBMISSION.md`](SUBMISSION.md).
+Full write-up (decisions, trade-offs, acceptance-scenario mapping, assumptions, AI usage): [`SUBMISSION.md`](SUBMISSION.md).
 
 We are hiring a **Product Engineer / Full-Stack Developer** to build and ship products in the AI space at Caygnus. The role is available in a **remote or hybrid** working arrangement.
 
